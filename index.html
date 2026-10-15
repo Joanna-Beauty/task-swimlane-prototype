@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>会议纪要总结 · 任务状态泳道</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/lingee-icon@1.0.9/dist/report-config.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/lingee-icon@1.0.9/dist/svg-sprite.min.js"></script>
+</head>
+<body class="bg-gray-100 text-black text-sm font-normal font-sans">
+  <div class="flex min-h-screen">
+    <aside class="hidden md:flex w-[52px] shrink-0 bg-white border-r border-black-6 flex-col items-center py-xl gap-xl" aria-label="应用栏">
+      <span class="flex items-center justify-center w-[32px] h-[32px] bg-primary-500 text-white rounded-r5"><svg width="20" height="20" fill="currentColor"><use href="#AiLogo"/></svg></span>
+      <svg class="text-black-46" width="20" height="20" fill="currentColor"><use href="#Search"/></svg>
+      <svg class="text-black-46" width="20" height="20" fill="currentColor"><use href="#DialogBox"/></svg>
+      <svg class="text-black-46" width="20" height="20" fill="currentColor"><use href="#Clipboard"/></svg>
+      <span class="flex items-center justify-center w-[36px] h-[36px] text-primary-500 bg-primary-bg rounded-r5"><svg width="20" height="20" fill="currentColor"><use href="#Agent"/></svg></span>
+      <div class="mt-auto w-[28px] h-[28px] rounded-full bg-black-6 text-black-64 flex items-center justify-center text-xs">贾</div>
+    </aside>
+    <aside class="hidden xl:flex w-[224px] shrink-0 flex-col px-md py-xl border-r border-black-6" aria-label="空间导航">
+      <div class="text-xl font-semibold px-xs mb-xl tracking-tight">Lingee<span class="text-primary-500">.</span></div>
+      <div class="flex items-center justify-between mb-xl text-black-64 px-2xs"><span class="px-xs">工作</span><span class="bg-white shadow-sm rounded-full px-md py-xs font-medium text-black">管理</span><span class="px-xs">开发</span></div>
+      <div class="space-y-2xs text-black-64" id="primary-nav"></div>
+      <p class="text-xs text-black-46 px-xs mt-2xl mb-sm">我的空间</p>
+      <div class="px-xs py-xs text-black-64 truncate">待跟进问题项目查询</div>
+      <div class="px-xs py-xs text-black-64 truncate">配置全天 CEO 助理</div>
+      <p class="text-xs text-black-46 px-xs mt-xl mb-sm">空间</p>
+      <div class="flex items-center gap-xs bg-white rounded-r5 px-sm py-sm text-primary-500 font-medium"><svg width="18" height="18" fill="currentColor"><use href="#Folder"/></svg>会议纪要总结</div>
+      <div id="space-nav" class="space-y-2xs mt-2xs text-black-64"></div>
+      <div class="mt-auto pt-2xl flex items-center gap-xs px-xs"><span class="w-[28px] h-[28px] rounded-full bg-white flex items-center justify-center text-xs">贾</span><span class="font-medium">贾娟娟</span><span class="text-xs text-primary-500 bg-primary-bg rounded-full px-xs">高级</span></div>
+    </aside>
+    <main class="min-w-0 flex-1 p-md md:p-xl lg:p-2xl">
+      <header class="mb-xl">
+        <div class="flex items-center gap-xs text-xs text-black-46 mb-sm"><svg width="16" height="16" fill="currentColor"><use href="#KnowledgeSpace"/></svg><span>空间</span><span>/</span><span>空间详情</span></div>
+        <div class="flex items-center justify-between gap-md"><h1 class="text-2xl font-semibold">会议纪要总结</h1><span class="hidden sm:flex items-center gap-xs text-black-46 text-xs"><svg width="16" height="16" fill="currentColor"><use href="#People"/></svg>2 位协作人</span></div>
+      </header>
+      <section class="bg-white rounded-r2 border border-black-6 min-h-[730px] p-md md:p-xl">
+        <div class="flex justify-between flex-wrap items-center gap-md mb-xl">
+          <div class="inline-flex gap-2xs p-2xs bg-black-3 rounded-r3" role="tablist" aria-label="空间内容">
+            <button id="tasks-tab" role="tab" aria-selected="true" aria-controls="tasks-panel" class="h-[32px] px-md rounded-r3 font-medium bg-white text-black cursor-pointer" data-page="tasks">计划与任务</button>
+            <button id="activity-tab" role="tab" aria-selected="false" aria-controls="activity-panel" class="h-[32px] px-md rounded-r3 text-black-64 cursor-pointer" data-page="activity">动态</button>
+          </div>
+          <div id="view-control" class="inline-flex gap-2xs p-2xs bg-black-3 rounded-r3" role="group" aria-label="任务视图">
+            <button id="list-view" aria-pressed="false" data-view="list" class="flex items-center gap-xs h-[32px] px-sm rounded-r3 text-black-64 transition-colors duration-150 cursor-pointer"><svg width="16" height="16" fill="currentColor"><use href="#ListCheck"/></svg>列表</button>
+            <button id="board-view" aria-pressed="true" data-view="board" class="flex items-center gap-xs h-[32px] px-sm rounded-r3 font-medium text-black bg-white transition-colors duration-150 cursor-pointer"><svg width="16" height="16" fill="currentColor"><use href="#LayoutPanelLeft"/></svg>泳道</button>
+          </div>
+        </div>
+        <div id="tasks-panel" role="tabpanel" aria-labelledby="tasks-tab">
+          <div class="flex flex-wrap gap-xs items-center mb-lg">
+            <select id="status-filter" class="hidden" aria-hidden="true" tabindex="-1"><option value="all">全部</option><option value="pending">待启动</option><option value="running">进行中</option><option value="review">待验收</option><option value="blocked">执行受阻</option><option value="done">已完成</option><option value="cancelled">已作废</option></select>
+            <div class="relative" data-filter-container="status-filter"><button id="status-filter-trigger" data-filter-trigger="status-filter" aria-label="按任务状态筛选" aria-haspopup="listbox" aria-expanded="false" aria-controls="status-filter-menu" class="flex items-center gap-sm min-w-[148px] h-[36px] px-sm bg-white border border-black-8 rounded-r5 text-black-82 focus:border-primary-600"></button><div id="status-filter-menu" role="listbox" aria-label="任务状态" class="hidden absolute top-[42px] left-0 z-30 min-w-[208px] bg-white rounded-r3 border border-black-6 shadow-md p-xs"></div></div>
+            <select id="owner-filter" class="hidden" aria-hidden="true" tabindex="-1"><option value="all">全部协作人</option><option>贾娟娟</option><option>吴婷莉</option></select>
+            <div class="relative" data-filter-container="owner-filter"><button id="owner-filter-trigger" data-filter-trigger="owner-filter" aria-label="按协作人筛选" aria-haspopup="listbox" aria-expanded="false" aria-controls="owner-filter-menu" class="flex items-center gap-sm min-w-[148px] h-[36px] px-sm bg-white border border-black-8 rounded-r5 text-black-82 focus:border-primary-600"></button><div id="owner-filter-menu" role="listbox" aria-label="协作人" class="hidden absolute top-[42px] left-0 z-30 min-w-[164px] bg-white rounded-r3 border border-black-6 shadow-md p-xs"></div></div>
+            <select id="sort" class="hidden" aria-hidden="true" tabindex="-1"><option value="original">原始顺序</option><option value="deadline">截止时间</option><option value="custom">自定义顺序</option></select>
+            <div class="relative" data-filter-container="sort"><button id="sort-trigger" data-filter-trigger="sort" aria-label="任务排序" aria-haspopup="listbox" aria-expanded="false" aria-controls="sort-menu" class="flex items-center gap-sm min-w-[124px] h-[36px] px-sm bg-white border border-black-8 rounded-r5 text-black-82 focus:border-primary-600"></button><div id="sort-menu" role="listbox" aria-label="排序方式" class="hidden absolute top-[42px] left-0 z-30 min-w-[156px] bg-white rounded-r3 border border-black-6 shadow-md p-xs"></div></div>
+            <div class="relative w-[200px] h-[36px]"><input id="search" aria-label="搜索任务标题" placeholder="搜索任务标题" class="w-full h-full pl-sm pr-[36px] border border-black-8 rounded-r4 text-black-82 placeholder:text-black-28 focus:border-primary-600 outline-none"><svg class="absolute right-sm top-[10px] text-black-46 pointer-events-none" width="16" height="16" fill="currentColor"><use href="#Search"/></svg></div>
+            <button id="clear-filters" class="hidden text-primary-500 px-xs h-[36px] hover:bg-primary-bg rounded-r6">清除筛选</button>
+            <button id="new-task" class="ml-auto inline-flex items-center gap-2xs h-[36px] px-sm rounded-r6 font-medium bg-primary-500 text-white hover:bg-primary-600 transition-colors duration-150"><svg width="18" height="18" fill="currentColor"><use href="#PlusCircle"/></svg>新建任务</button>
+          </div>
+          <div class="flex items-center justify-between gap-xs text-xs text-black-46 mb-md"><p id="result-count" aria-live="polite"></p><p id="view-hint" class="flex items-center gap-2xs"><svg width="16" height="16" fill="currentColor"><use href="#Layers"/></svg>按任务状态分组</p></div>
+          <p id="relationship-hint" class="flex items-center gap-xs text-xs text-black-64 mb-md"></p>
+          <div id="task-content"></div>
+          <div class="mt-lg flex flex-wrap justify-between gap-xs text-xs text-black-46"><span id="interaction-hint">点击任务卡片查看详情</span><span>示例数据 · 修改仅保存在当前页面</span></div>
+        </div>
+        <div id="activity-panel" role="tabpanel" aria-labelledby="activity-tab" class="hidden"><h2 class="text-base font-medium mb-xl">空间动态</h2><div id="activity-list" class="max-w-[720px]"></div></div>
+      </section>
+    </main>
+  </div>
+  <dialog id="task-dialog" class="p-0 m-auto w-[560px] max-w-[calc(100%-32px)] max-h-[90vh] overflow-y-auto rounded-r2 border border-black-6 shadow-lg bg-white text-black backdrop:bg-black-28">
+    <form id="task-form" class="p-xl md:p-2xl">
+      <div class="flex items-center justify-between mb-xl"><h2 id="dialog-title" class="text-xl font-medium">任务详情</h2><button type="button" data-close="task-dialog" aria-label="关闭任务详情" class="w-[32px] h-[32px] flex items-center justify-center rounded-r6 text-black-46 hover:bg-black-4"><svg width="20" height="20" fill="currentColor"><use href="#XDiamond"/></svg></button></div>
+      <label for="task-title" class="block text-black-64 mb-xs">任务名称 <span class="text-danger-600">*</span></label>
+      <input id="task-title" required maxlength="80" autocomplete="off" class="w-full h-[40px] px-sm border border-black-8 rounded-r5 outline-none focus:border-primary-600" placeholder="例如：整理产品周会会议纪要">
+      <div class="grid grid-cols-2 gap-md mt-lg">
+        <div><label for="task-owner" class="block text-black-64 mb-xs">协作人</label><select id="task-owner" class="w-full h-[40px] px-sm border border-black-8 rounded-r5 bg-white outline-none focus:border-primary-600"><option>贾娟娟</option><option>吴婷莉</option></select></div>
+        <div><label for="task-date" class="block text-black-64 mb-xs">截止时间</label><input id="task-date" type="date" class="w-full h-[40px] px-sm border border-black-8 rounded-r5 outline-none focus:border-primary-600"></div>
+      </div>
+      <dl class="grid grid-cols-[100px_1fr] items-center gap-y-md mt-xl py-lg border-y border-black-6"><dt class="text-black-46">执行智能体</dt><dd class="flex gap-xs items-center"><svg class="text-primary-500" width="18" height="18" fill="currentColor"><use href="#Agent"/></svg>空间智能体</dd><dt class="text-black-46">任务状态</dt><dd id="task-status"></dd><dt class="text-black-46">关联会话</dt><dd id="task-conversation"></dd></dl>
+      <div id="task-relationships" class="mt-lg"></div>
+      <div class="flex justify-end gap-xs mt-xl"><button type="button" data-close="task-dialog" class="h-[36px] px-md rounded-r6 border border-black-8 text-black-64">取消</button><button id="save-task" type="submit" class="h-[36px] px-md rounded-r6 bg-primary-500 text-white font-medium hover:bg-primary-600">保存修改</button></div>
+    </form>
+  </dialog>
+  <dialog id="conversation-dialog" class="p-0 m-auto w-[520px] max-w-[calc(100%-32px)] max-h-[85vh] overflow-y-auto rounded-r2 border border-black-6 shadow-lg bg-white text-black backdrop:bg-black-28">
+    <div class="p-xl"><div class="flex items-center justify-between mb-xl"><h2 class="text-lg font-medium">关联会话</h2><button data-close="conversation-dialog" aria-label="关闭关联会话" class="w-[32px] h-[32px] flex items-center justify-center rounded-r6 text-black-46 hover:bg-black-4"><svg width="20" height="20" fill="currentColor"><use href="#XDiamond"/></svg></button></div><p class="text-xs text-black-46 mb-xs">会议纪要总结 / 任务会话</p><h3 id="conversation-title" class="text-base font-medium mb-xl"></h3><div id="conversation-body" class="space-y-md"></div><p class="text-xs text-black-46 mt-xl">会话内容为交互演示。</p></div>
+  </dialog>
+  <div id="toast" role="status" class="hidden fixed bottom-xl left-1/2 -translate-x-1/2 z-50 bg-white border border-black-8 shadow-md rounded-r5 px-lg py-sm text-black-82 max-w-[90vw]"></div>
+  <script>
+  const icon = (name, size=16, cls='') => `<svg class="shrink-0 ${cls}" width="${size}" height="${size}" fill="currentColor" aria-hidden="true"><use href="#${name}"/></svg>`;
+  const escapeHTML = s => String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+  const statuses = {
+    pending: {name:'待启动', icon:'Clock', text:'text-black-64', bg:'bg-black-6', caption:'等待启动的任务'},
+    running: {name:'进行中', icon:'LoaderCircle', text:'text-primary-500', bg:'bg-primary-bg', caption:'智能体正在推进的任务'},
+    review: {name:'待验收', icon:'ListCheck', text:'text-warning-600', bg:'bg-warning-bg', caption:'等待协作人验收的任务'},
+    blocked: {name:'执行受阻', icon:'ExclamationCircle', text:'text-danger-600', bg:'bg-danger-bg', caption:'需要协作人跟进处理'},
+    done: {name:'已完成', icon:'Check2Circle', text:'text-success-600', bg:'bg-success-bg', caption:'已完成执行的任务'},
+    cancelled: {name:'已作废', icon:'SlashCircle', text:'text-black-46', bg:'bg-black-6', caption:'已作废的任务'}
+  };
+  // parentId 仅表达层级关系；每条任务独立保存 status，不计算或联动父子状态。
+  const tasks = [
+    {id:1,title:'制定会议纪要模板与总结规范',agent:'空间智能体',owner:'贾娟娟',date:'2026-10-12',status:'done',conversation:true},
+    {id:2,title:'收集整理会议记录材料',agent:'空间智能体',owner:'贾娟娟',date:'2026-10-13',status:'running',conversation:true},
+    {id:3,title:'按模板生成会议纪要初稿',agent:'空间智能体',owner:'贾娟娟',date:'2026-10-14',status:'running',conversation:true},
+    {id:4,title:'提炼会议决议与待办事项',agent:'空间智能体',owner:'贾娟娟',date:'2026-10-14',status:'running',conversation:true},
+    {id:5,title:'纪要归档与待办跟进复盘',agent:'空间智能体',owner:'贾娟娟',date:'2026-10-16',status:'blocked',conversation:true},
+    {id:6,title:'补充产品周会录音及转写材料',agent:'空间智能体',owner:'贾娟娟',date:'2026-10-13',status:'blocked',conversation:true},
+    {id:7,title:'核对会议参会名单与议题',agent:'空间智能体',owner:'吴婷莉',date:'',status:'running',conversation:false},
+    {id:8,title:'收集会议纪要',agent:'空间智能体',owner:'贾娟娟',date:'2026-10-13',status:'done',conversation:false,parentId:2},
+    {id:9,title:'核对录音转写材料',agent:'空间智能体',owner:'吴婷莉',date:'2026-10-14',status:'blocked',conversation:false,parentId:2}
+  ];
+  const conversationReplies = {1:'会议纪要模板与总结规范已整理完成，包含会议结论、决议和后续待办。',2:'正在汇总本次会议记录，并核对已上传的录音转写材料。',3:'正在根据纪要模板整理初稿。',4:'正在从会议记录中提炼关键决议与待办事项。',5:'归档目录暂时无法写入，请协作人确认目录的访问权限后继续。',6:'缺少产品周会录音材料，请协作人补充后继续整理。'};
+  const activities = [{text:'空间智能体完成了「制定会议纪要模板与总结规范」',time:'10 月 12 日 17:30'}, {text:'「纪要归档与待办跟进复盘」执行受阻，等待协作人处理',time:'10 月 13 日 09:20'}, {text:'吴婷莉协作跟进「核对会议参会名单与议题」',time:'10 月 13 日 10:00'}];
+  let view='board', editingId=null, toastTimer, parentHighlightTimer, parentHighlightNode=null;
+  let laneOrder=Object.keys(statuses), laneDrag=null, cardDrag=null, suppressCardClick=false;
+  const expandedParents=new Set([2]);
+  const $ = id => document.getElementById(id);
+  $('primary-nav').innerHTML = [['SmartAssistant','小贾'],['KnowledgeSpace','空间'],['People','AI 组织']].map(([i,t])=>`<div class="flex gap-xs items-center px-xs py-xs">${icon(i,18)}${t}</div>`).join('');
+  $('space-nav').innerHTML = ['费用报销指引','香港旅游一天计划','用友 9 月竞品分析','找餐厅','9 月销售部商旅支出情况'].map(t=>`<div class="flex gap-xs items-center px-sm py-sm">${icon('Folder',18)}<span class="truncate">${t}</span></div>`).join('');
+  function badge(status) {const s=statuses[status];return `<span class="inline-flex items-center h-[24px] px-xs rounded-full text-xs whitespace-nowrap ${s.bg} ${s.text}">${s.name}</span>`;}
+  function dateText(date) {return date ? date.slice(5).replace('-', ' 月 ')+' 日' : '未设置';}
+  function avatar(owner) {return `<span class="w-[24px] h-[24px] rounded-full ${owner==='贾娟娟'?'bg-primary-bg text-primary-500':'bg-black-6 text-black-64'} inline-flex items-center justify-center text-xs shrink-0">${escapeHTML(owner[0])}</span>`;}
+  function closeFilterMenus(){document.querySelectorAll('[data-filter-trigger]').forEach(button=>{button.setAttribute('aria-expanded','false');$(button.dataset.filterTrigger+'-menu').classList.add('hidden');});}
+  function renderFilters(){
+    ['status-filter','owner-filter','sort'].forEach(id=>{
+      const select=$(id),trigger=$(id+'-trigger'),selected=select.selectedOptions[0];
+      const count=value=>tasks.filter(t=>value==='all'||t.status===value).length;
+      trigger.innerHTML=`<span>${escapeHTML(selected.textContent)}</span>${id==='status-filter'?`<span class="ml-auto text-black-46">${count(select.value)}</span>`:''}${icon('ChevronDown',16,id==='status-filter'?'text-black-46':'ml-auto text-black-46')}`;
+      $(id+'-menu').innerHTML=[...select.options].filter(o=>id!=='sort'||o.value!=='custom'||select.value==='custom').map(o=>`<button type="button" role="option" aria-selected="${o.selected}" data-filter-option="${id}" data-value="${escapeHTML(o.value)}" class="flex items-center gap-xs w-full h-[36px] px-sm rounded-r6 text-left text-black-82 hover:bg-black-4 focus:bg-black-4" ${id==='sort'&&o.value==='deadline'?'title="按截止时间从近到远，未设置的排在最后"':''}><span>${escapeHTML(o.textContent)}</span>${id==='status-filter'?`<span class="ml-auto text-black-46">${count(o.value)}</span>`:''}<span class="${id==='status-filter'?'':'ml-auto '}w-[16px]">${o.selected?icon('Check',16):''}</span></button>`).join('');
+    });
+  }
+  function childTasks(id){return orderedTasks().filter(t=>t.parentId===id);}
+  function rootTasks(){return orderedTasks().filter(t=>!t.parentId);}
+  function taskMatches(t){return ($('owner-filter').value==='all'||t.owner===$('owner-filter').value)&&t.title.toLowerCase().includes($('search').value.trim().toLowerCase());}
+  function expandMatchedParents(){const matches=new Set(filteredTasks().map(t=>t.id));rootTasks().forEach(t=>{if(!matches.has(t.id)&&childTasks(t.id).some(c=>matches.has(c.id)))expandedParents.add(t.id);});}
+  function treeToggle(t){
+    const children=childTasks(t.id);if(!children.length)return '';
+    const expanded=expandedParents.has(t.id);
+    return `<button type="button" data-toggle-children="${t.id}" aria-expanded="${expanded}" aria-label="${expanded?'收起':'展开'}${escapeHTML(t.title)}的子任务" class="w-[24px] h-[28px] shrink-0 flex items-center justify-center text-black-46 hover:text-primary-500 rounded-r7">${icon(expanded?'ChevronDown':'ChevronRight',16)}</button>`;
+  }
+  function parentReference(t,locate=false){
+    const parent=tasks.find(p=>p.id===t.parentId);if(!parent)return '';
+    return `<button type="button" ${locate?'data-locate-parent':'data-related'}="${parent.id}" title="${locate?'定位父任务':'父任务'}：${escapeHTML(parent.title)}" aria-label="${locate?'定位父任务':'查看父任务'}：${escapeHTML(parent.title)}" class="flex items-center gap-2xs min-w-0 max-w-full text-xs text-black-46 hover:text-primary-500"><span class="shrink-0">所属：</span><span class="truncate">${escapeHTML(parent.title)}</span>${icon('ChevronRight',14)}</button>`;
+  }
+  function childRows(children){return children.map(c=>`<button type="button" data-related="${c.id}" class="flex items-start justify-between gap-xs w-full text-left px-xs py-xs rounded-r6 hover:bg-black-4"><span class="text-xs text-black-64 leading-[20px]">${escapeHTML(c.title)}</span>${badge(c.status)}</button>`).join('');}
+  function orderedTasks() {
+    const result=[...tasks];
+    if($('sort').value==='deadline') result.sort((a,b)=>(a.date||'9999').localeCompare(b.date||'9999')||a.id-b.id);
+    else if($('sort').value==='original') result.sort((a,b)=>a.id-b.id);
+    return result;
+  }
+  function filteredTasks() {
+    return orderedTasks().filter(t=>($('status-filter').value==='all'||t.status===$('status-filter').value)&&taskMatches(t));
+  }
+  function conversationButton(t,compact=false) {return t.conversation ? `<button data-conversation="${t.id}" aria-label="查看${escapeHTML(t.title)}的关联会话" title="查看关联会话" class="inline-flex items-center gap-2xs ${compact?'text-black-46':'text-primary-500'} hover:text-primary-600 rounded-r7 py-2xs">${icon('ChatDots')}${compact?'':'查看会话'}</button>` : `<span class="text-black-28">${compact?'—':'未关联会话'}</span>`;}
+  function card(t) {return `<article class="bg-white border border-black-6 rounded-r4 p-md hover:border-primary-500 hover:shadow-sm transition-colors duration-150 group cursor-grab active:cursor-grabbing select-none" data-task-id="${t.id}" title="仅支持在当前泳道内拖动排序">
+      ${t.parentId?`<div class="mb-xs min-w-0">${parentReference(t,true)}</div>`:''}
+      <div class="flex items-start gap-xs"><button data-edit="${t.id}" class="block text-left flex-1 min-w-0 font-medium text-base leading-[26px] break-words hover:text-primary-500 focus-visible:outline-primary-500" aria-label="查看任务：${escapeHTML(t.title)}">${escapeHTML(t.title)}</button><button data-card-handle="${t.id}" aria-label="拖动任务：${escapeHTML(t.title)}" title="在当前泳道内拖动卡片，也可按上下方向键排序" class="w-[24px] h-[28px] shrink-0 flex items-center justify-center text-black-46 hover:text-primary-500 rounded-r7 cursor-grab active:cursor-grabbing touch-none">${icon('Threedots',18,'rotate-90')}</button></div>
+      <div class="flex items-center gap-2xs text-xs text-black-46 mt-sm">${icon('Agent',16)}<span>${t.agent}</span></div>
+      <div class="flex items-center justify-between gap-xs mt-xl pt-sm border-t border-black-6"><div class="flex gap-xs items-center text-xs text-black-64">${avatar(t.owner)}${escapeHTML(t.owner)}</div><div class="flex gap-2xs items-center text-xs text-black-46" title="截止时间：${t.date||'未设置'}">${icon('FieldTypeDate')}${dateText(t.date)}</div></div>
+      <div class="mt-sm flex justify-between items-center text-xs">${conversationButton(t)}<button data-edit="${t.id}" aria-label="编辑${escapeHTML(t.title)}" class="flex items-center justify-center w-[28px] h-[28px] rounded-r6 text-black-46 hover:bg-black-4">${icon('Edit')}</button></div>
+    </article>`;}
+  function render() {
+    clearParentHighlight();
+    renderFilters();
+    const data=filteredTasks(), active=$('status-filter').value!=='all'||$('owner-filter').value!=='all'||$('search').value.trim()!=='';
+    const childCount=data.filter(t=>t.parentId).length;
+    $('result-count').textContent=(active?`显示 ${data.length} / ${tasks.length} 个任务`:`共 ${tasks.length} 个任务`)+(view==='list'?` · ${data.length-childCount} 个主任务，${childCount} 个子任务`:'');
+    $('clear-filters').classList.toggle('hidden',!active);
+    $('view-hint').innerHTML=view==='board'?icon('ArrowHalfLeftRight')+'列头可排序 · 卡片可拖动':icon('ListCheck')+'父子任务可展开 / 收起';
+    $('interaction-hint').textContent=view==='board'?'卡片仅支持在当前泳道内拖动排序 · 点击任务名称查看详情':'点击任务名称查看详情';
+    $('relationship-hint').innerHTML=icon('Information',16)+(view==='board'?'按任务状态分组，父子关系可在任务详情中查看。':'展开父任务查看子任务，父子任务状态独立。');
+    document.querySelectorAll('[data-view]').forEach(b=>{const selected=b.dataset.view===view;b.setAttribute('aria-pressed',selected);b.classList.toggle('bg-white',selected);b.classList.toggle('font-medium',selected);b.classList.toggle('text-black',selected);b.classList.toggle('text-black-64',!selected);});
+    if(view==='board') {
+      // 全部视图展示有任务的状态；零任务状态仍可从筛选菜单进入。
+      const keys=$('status-filter').value==='all'?laneOrder.filter(key=>tasks.some(t=>t.status===key)):[$('status-filter').value];
+      $('task-content').innerHTML=`<div class="overflow-x-auto pb-xs"><div class="grid ${keys.length===1?'grid-cols-1':'grid-flow-col auto-cols-[minmax(300px,1fr)] min-w-[840px]'} gap-md items-stretch">${keys.map(key=>{
+        const s=statuses[key], items=data.filter(t=>t.status===key);
+        return `<section data-lane="${key}" aria-label="${s.name}泳道" class="bg-gray-50 border border-black-6 rounded-r4 p-sm min-h-[550px] transition-colors duration-150"><header data-lane-handle="${key}" data-sortable="${keys.length>1}" tabindex="${keys.length>1?'0':'-1'}" aria-label="${s.name}泳道，拖动排序，也可按左右方向键调整位置" title="${keys.length>1?'按住列头左右拖动，整列任务一起移动':'显示全部状态后可拖动排序'}" class="px-2xs pt-2xs pb-md rounded-r6 select-none touch-none ${keys.length>1?'cursor-grab active:cursor-grabbing hover:bg-black-3 focus-visible:outline-primary-500':''}"><div class="flex items-center gap-xs"><span class="${s.text}">${icon(s.icon,18)}</span><h2 class="font-medium">${s.name}</h2><span class="text-xs text-black-46 bg-black-4 rounded-r7 min-w-[24px] h-[22px] px-2xs flex items-center justify-center" data-lane-count="${key}">${items.length}</span>${keys.length>1?`<span class="ml-auto flex items-center gap-2xs text-xs text-black-46">${icon('ArrowHalfLeftRight',16)}拖动排序</span>`:''}</div><p class="text-xs text-black-46 mt-xs">${s.caption}</p></header><div class="space-y-sm ${keys.length===1?'max-w-[560px]':''}">${items.length?items.map(card).join(''):`<div class="flex flex-col items-center justify-center text-black-28 py-4xl gap-xs border border-dashed border-black-8 rounded-r5">${icon('Clipboard',24)}<p class="text-xs text-black-46">${active?'没有符合筛选条件的任务':'暂无'+s.name+'任务'}</p></div>`}</div></section>`;
+      }).join('')}</div></div>`;
+    } else {
+      const th='bg-gray-100 text-sm font-normal text-black-64 text-left px-md py-sm h-[48px] border-b border-gray-300 whitespace-nowrap';
+      const td='text-sm text-black-82 px-md py-sm h-[64px] border-b border-gray-300';
+      const matchIds=new Set(data.map(t=>t.id));
+      const groups=orderedTasks().filter(t=>!t.parentId&&(matchIds.has(t.id)||childTasks(t.id).some(c=>matchIds.has(c.id))));
+      const row=(t,index,isChild=false)=>{
+        const children=childTasks(t.id);
+        return `<tr data-row-task-id="${t.id}" ${isChild?`data-parent-id="${t.parentId}"`:''} class="hover:bg-black-3 ${isChild?'bg-gray-50':''}"><td class="${td} text-center text-black-46">${isChild?'':index+1}</td><td class="${td} min-w-[280px]"><div class="flex items-center gap-xs ${isChild?'pl-2xl':''}">${isChild?'<span class="w-[14px] shrink-0"></span>':children.length?treeToggle(t):'<span class="w-[24px] shrink-0"></span>'}<button data-edit="${t.id}" class="text-left ${isChild?'text-black-64':'font-medium'} hover:text-primary-500">${escapeHTML(t.title)}</button>${children.length?`<span class="text-xs text-black-46">${children.length}</span>`:''}</div></td><td class="${td}">${conversationButton(t,true)}</td><td class="${td} whitespace-nowrap">${t.agent}</td><td class="${td} whitespace-nowrap"><span class="flex items-center gap-xs">${avatar(t.owner)}${escapeHTML(t.owner)}</span></td><td class="${td} whitespace-nowrap text-black-64">${t.date||'—'}</td><td class="${td}">${badge(t.status)}</td><td class="${td}"><button data-edit="${t.id}" aria-label="编辑${escapeHTML(t.title)}" class="w-[28px] h-[28px] flex items-center justify-center rounded-r6 hover:bg-black-4 text-black-46">${icon('Edit')}</button></td></tr>`;
+      };
+      $('task-content').innerHTML=`<div class="overflow-x-auto border border-gray-300 rounded-r5"><table class="w-full min-w-[900px] border-separate border-spacing-0"><thead><tr>${['序号','任务','关联会话','执行智能体','协作人','截止时间','状态','操作'].map(h=>`<th class="${th}">${h}</th>`).join('')}</tr></thead><tbody>${groups.length?groups.map((t,i)=>row(t,i)+(expandedParents.has(t.id)?childTasks(t.id).filter(c=>matchIds.has(c.id)).map(c=>row(c,i,true)).join(''):'')).join(''):`<tr><td colspan="8" class="h-[260px] text-center text-black-46">没有符合筛选条件的任务，请调整或清除筛选条件。</td></tr>`}</tbody></table></div>`;
+      groups.filter(t=>!matchIds.has(t.id)).forEach(t=>{
+        const title=document.querySelector(`[data-row-task-id="${t.id}"] [data-edit]`);
+        title.insertAdjacentHTML('afterend','<span class="text-xs text-black-46 whitespace-nowrap">关联父任务</span>');
+      });
+    }
+  }
+  function announceLaneOrder() {notify('泳道顺序：'+laneOrder.filter(key=>tasks.some(t=>t.status===key)).map(key=>statuses[key].name).join(' → '));}
+  // 使用指针事件，鼠标和触屏均可直接拖动整列，不依赖浏览器原生拖放。
+  $('task-content').addEventListener('pointerdown', e=>{
+    const handle=e.target.closest('[data-lane-handle]');
+    if(!handle||handle.dataset.sortable!=='true'||e.button!==0||laneDrag||cardDrag)return;
+    laneDrag={key:handle.dataset.laneHandle,pointerId:e.pointerId,startX:e.clientX,startY:e.clientY,initial:[...laneOrder],active:false};
+    handle.focus();e.currentTarget.setPointerCapture(e.pointerId);
+  });
+  $('task-content').addEventListener('pointermove', e=>{
+    if(!laneDrag||e.pointerId!==laneDrag.pointerId)return;
+    if(!laneDrag.active&&Math.hypot(e.clientX-laneDrag.startX,e.clientY-laneDrag.startY)<6)return;
+    laneDrag.active=true;e.preventDefault();
+    const source=document.querySelector(`[data-lane="${laneDrag.key}"]`);
+    source.classList.add('ring-2','ring-inset','ring-primary-500','shadow-md');
+    $('task-content').classList.add('cursor-grabbing','select-none');
+    const scroller=source.parentElement.parentElement,scrollRect=scroller.getBoundingClientRect();
+    if(e.clientX>scrollRect.right-48)scroller.scrollLeft+=24;
+    else if(e.clientX<scrollRect.left+48)scroller.scrollLeft-=24;
+    const columns=[...source.parentElement.children],index=columns.indexOf(source);
+    let destination=index;
+    columns.forEach((column,i)=>{
+      if(column===source)return;const rect=column.getBoundingClientRect(),mid=rect.left+rect.width/2;
+      if(i>index&&e.clientX>mid)destination=Math.max(destination,i);
+      if(i<index&&e.clientX<mid)destination=Math.min(destination,i);
+    });
+    if(destination!==index){
+      const target=columns[destination];
+      source.parentElement.insertBefore(source,destination>index?target.nextSibling:target);
+      const visibleOrder=[...source.parentElement.children].map(column=>column.dataset.lane);
+      let visibleIndex=0;laneOrder=laneOrder.map(key=>visibleOrder.includes(key)?visibleOrder[visibleIndex++]:key);
+    }
+    $('view-hint').textContent='松开完成排序 · Esc 取消';
+    $('interaction-hint').textContent=laneOrder.map(key=>statuses[key].name).join(' → ');
+  });
+  function finishLaneDrag(cancel=false){
+    if(!laneDrag)return;
+    const drag=laneDrag;laneDrag=null;
+    if(cancel)laneOrder=drag.initial;
+    if($('task-content').hasPointerCapture(drag.pointerId))$('task-content').releasePointerCapture(drag.pointerId);
+    $('task-content').classList.remove('cursor-grabbing','select-none');render();
+    document.querySelector(`[data-lane-handle="${drag.key}"]`)?.focus({preventScroll:true});
+    if(!cancel&&laneOrder.join()!==drag.initial.join())announceLaneOrder();
+  }
+  $('task-content').addEventListener('pointerup',e=>{if(laneDrag?.pointerId===e.pointerId)finishLaneDrag();});
+  $('task-content').addEventListener('pointercancel',()=>finishLaneDrag(true));
+  $('task-content').addEventListener('lostpointercapture',()=>finishLaneDrag(true));
+  document.addEventListener('keydown',e=>{if(e.key==='Escape'&&laneDrag){e.preventDefault();finishLaneDrag(true);}});
+  $('task-content').addEventListener('keydown',e=>{
+    const handle=e.target.closest('[data-lane-handle]');
+    if(laneDrag||!handle||handle.dataset.sortable!=='true'||!['ArrowLeft','ArrowRight'].includes(e.key))return;
+    e.preventDefault();const key=handle.dataset.laneHandle,visible=[...document.querySelectorAll('[data-lane]')].map(l=>l.dataset.lane),index=visible.indexOf(key),next=index+(e.key==='ArrowRight'?1:-1);
+    if(next<0||next>=visible.length)return;
+    const a=laneOrder.indexOf(key),b=laneOrder.indexOf(visible[next]);
+    [laneOrder[a],laneOrder[b]]=[laneOrder[b],laneOrder[a]];render();
+    document.querySelector(`[data-lane-handle="${key}"]`).focus();announceLaneOrder();
+  });
+  function moveCard(id,status,beforeId=null) {
+    const task=tasks.find(t=>t.id===id);
+    if(!task||task.status!==status)return false;
+    if(beforeId!==null&&!tasks.some(t=>t.id===beforeId&&t.status===status&&t.id!==id))return false;
+    const ordered=orderedTasks();
+    const next=ordered.filter(t=>t.id!==id);
+    let index=beforeId===null?-1:next.findIndex(t=>t.id===beforeId);
+    if(index<0){index=next.reduce((last,t,i)=>t.status===status?i:last,-1)+1;if(index===0)index=next.length;}
+    next.splice(index,0,task);
+    if(next.every((t,i)=>t.id===ordered[i].id))return false;
+    tasks.splice(0,tasks.length,...next);$('sort').value='custom';
+    return true;
+  }
+  const cardDropMarker=document.createElement('div');
+  cardDropMarker.className='h-[4px] bg-primary-500 rounded-full pointer-events-none';
+  cardDropMarker.setAttribute('aria-hidden','true');
+  $('task-content').addEventListener('pointerdown',e=>{
+    const article=e.target.closest('[data-task-id]');
+    if(!article||e.button!==0||laneDrag||cardDrag)return;
+    // 保留查看会话、编辑按钮的点击；标题支持短按查看和长距离拖动。
+    const button=e.target.closest('button');
+    if(button&&!button.dataset.cardHandle&&!button.getAttribute('aria-label')?.startsWith('查看任务：'))return;
+    cardDrag={id:Number(article.dataset.taskId),pointerId:e.pointerId,startX:e.clientX,startY:e.clientY,active:false,target:null};
+  });
+  document.addEventListener('pointermove',e=>{
+    if(!cardDrag||cardDrag.pointerId!==e.pointerId)return;
+    if(!cardDrag.active&&Math.hypot(e.clientX-cardDrag.startX,e.clientY-cardDrag.startY)<6)return;
+    if(!cardDrag.active){cardDrag.active=true;$('task-content').setPointerCapture(e.pointerId);}
+    e.preventDefault();
+    const source=document.querySelector(`[data-task-id="${cardDrag.id}"]`);
+    source.classList.add('opacity-40');$('task-content').classList.add('cursor-grabbing','select-none');
+    const scroller=source.closest('[data-lane]').parentElement.parentElement,rect=scroller.getBoundingClientRect();
+    if(e.clientX>rect.right-40)scroller.scrollLeft+=24;else if(e.clientX<rect.left+40)scroller.scrollLeft-=24;
+    if(e.clientY>innerHeight-64)window.scrollBy(0,24);else if(e.clientY<64)window.scrollBy(0,-24);
+    document.querySelectorAll('[data-lane]').forEach(l=>l.classList.remove('ring-2','ring-inset','ring-primary-500'));
+    const lane=document.elementFromPoint(e.clientX,e.clientY)?.closest('[data-lane]');
+    if(!lane||lane.dataset.lane!==tasks.find(t=>t.id===cardDrag.id).status){
+      cardDrag.target=null;cardDropMarker.remove();
+      $('view-hint').textContent='仅支持在当前泳道内排序 · Esc 取消';return;
+    }
+    lane.classList.add('ring-2','ring-inset','ring-primary-500');
+    const cards=[...lane.querySelectorAll('[data-task-id]')].filter(el=>el!==source);
+    const before=cards.find(el=>{const r=el.getBoundingClientRect();return e.clientY<r.top+r.height/2;});
+    const list=lane.lastElementChild;
+    if(before){if(cardDropMarker.nextElementSibling!==before)list.insertBefore(cardDropMarker,before);}
+    else if(cardDropMarker.parentElement!==list||cardDropMarker!==list.lastElementChild)list.append(cardDropMarker);
+    cardDrag.target={status:lane.dataset.lane,beforeId:before?Number(before.dataset.taskId):null};
+    $('view-hint').textContent='松开完成卡片排序 · Esc 取消';
+  },{passive:false});
+  function finishCardDrag(cancel=false) {
+    if(!cardDrag)return;const drag=cardDrag;cardDrag=null;
+    if($('task-content').hasPointerCapture(drag.pointerId))$('task-content').releasePointerCapture(drag.pointerId);
+    if(!drag.active)return;
+    suppressCardClick=true;setTimeout(()=>suppressCardClick=false,0);
+    const changed=!cancel&&drag.target&&moveCard(drag.id,drag.target.status,drag.target.beforeId);
+    cardDropMarker.remove();$('task-content').classList.remove('cursor-grabbing','select-none');render();
+    document.querySelector(`[data-card-handle="${drag.id}"]`)?.focus({preventScroll:true});
+    if(changed)notify('卡片顺序已更新，已切换为自定义顺序');
+  }
+  document.addEventListener('pointerup',e=>{if(cardDrag?.pointerId===e.pointerId)finishCardDrag();});
+  document.addEventListener('pointercancel',()=>finishCardDrag(true));
+  $('task-content').addEventListener('lostpointercapture',()=>finishCardDrag(true));
+  document.addEventListener('keydown',e=>{if(e.key==='Escape'&&cardDrag){e.preventDefault();finishCardDrag(true);}});
+  $('task-content').addEventListener('click',e=>{if(suppressCardClick){e.preventDefault();e.stopPropagation();}},{capture:true});
+  $('task-content').addEventListener('keydown',e=>{
+    const handle=e.target.closest('[data-card-handle]');if(!handle||cardDrag||laneDrag||!['ArrowUp','ArrowDown'].includes(e.key))return;
+    e.preventDefault();const id=Number(handle.dataset.cardHandle),task=tasks.find(t=>t.id===id);
+    const status=task.status,visible=filteredTasks().filter(t=>t.status===status),i=visible.findIndex(t=>t.id===id);
+    let beforeId=null;
+    if(e.key==='ArrowUp'){if(i===0)return;beforeId=visible[i-1].id;}
+    else{if(i===visible.length-1)return;beforeId=visible[i+2]?.id??null;}
+    if(moveCard(id,status,beforeId)){render();document.querySelector(`[data-card-handle="${id}"]`)?.focus({preventScroll:true});notify('任务位置已更新');}
+  });
+  function renderActivity() {$('activity-list').innerHTML=[...activities].reverse().map(a=>`<div class="flex gap-sm py-lg border-b border-black-6"><span class="w-[32px] h-[32px] rounded-full bg-black-3 text-black-46 flex items-center justify-center shrink-0">${icon('Activity')}</span><div><p class="text-black-82">${escapeHTML(a.text)}</p><p class="text-xs text-black-46 mt-2xs">${escapeHTML(a.time)}</p></div></div>`).join('');}
+  function notify(message) {clearTimeout(toastTimer);$('toast').textContent=message;$('toast').classList.remove('hidden');toastTimer=setTimeout(()=>$('toast').classList.add('hidden'),3000);}
+  function clearParentHighlight(){
+    clearTimeout(parentHighlightTimer);
+    if(parentHighlightNode){parentHighlightNode.classList.remove('ring-2','ring-primary-500','shadow-md');parentHighlightNode.removeAttribute('data-parent-highlight');parentHighlightNode=null;}
+  }
+  function locateParent(id){
+    const parent=tasks.find(t=>t.id===id);if(!parent){notify('未找到父任务');return;}
+    const cleared=[];
+    if($('status-filter').value!=='all'&&$('status-filter').value!==parent.status){$('status-filter').value='all';cleared.push('状态');}
+    if($('owner-filter').value!=='all'&&$('owner-filter').value!==parent.owner){$('owner-filter').value='all';cleared.push('协作人');}
+    if(!parent.title.toLowerCase().includes($('search').value.trim().toLowerCase())){$('search').value='';cleared.push('标题');}
+    if(cleared.length)render();else clearParentHighlight();
+    const card=document.querySelector(`[data-task-id="${id}"]`);if(!card)return;
+    parentHighlightNode=card;
+    card.classList.add('ring-2','ring-primary-500','shadow-md','outline-none');
+    card.setAttribute('data-parent-highlight','true');card.setAttribute('tabindex','-1');card.setAttribute('aria-label',`父任务：${parent.title}`);
+    card.focus({preventScroll:true});
+    card.scrollIntoView({behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'instant':'smooth',block:'center',inline:'center'});
+    notify((cleared.length?`已解除${cleared.join('、')}筛选，`:'')+'已定位父任务：'+parent.title);
+    parentHighlightTimer=setTimeout(clearParentHighlight,4000);
+  }
+  function openTask(id) {
+    const t=tasks.find(t=>t.id===id);editingId=t?t.id:null;
+    $('dialog-title').textContent=t?'任务详情':'新建任务';$('task-title').value=t?t.title:'';$('task-owner').value=t?t.owner:'贾娟娟';$('task-date').value=t?t.date:'';
+    $('task-status').innerHTML=t?badge(t.status):'<span class="text-black-64">创建后进入「进行中」</span>';
+    $('task-conversation').innerHTML=t?conversationButton(t):'<span class="text-black-46">未关联会话</span>';
+    const children=t?childTasks(t.id):[];
+    $('task-relationships').innerHTML=t?.parentId?`<p class="text-xs text-black-46 mb-xs">所属父任务</p>${parentReference(t)}`:children.length?`<p class="text-xs text-black-46 mb-xs">全部子任务 · ${children.length} 个</p><div class="bg-gray-50 rounded-r5 p-xs">${childRows(children)}</div>`:'';
+    $('task-relationships').classList.toggle('hidden',!t||(!t.parentId&&!children.length));
+    $('save-task').textContent=t?'保存修改':'创建任务';$('task-title').setCustomValidity('');if(!$('task-dialog').open)$('task-dialog').showModal();
+  }
+  document.addEventListener('click', e=>{
+    if(!e.target.closest('[data-filter-container]'))closeFilterMenus();
+    const b=e.target.closest('button');if(!b)return;
+    if(b.dataset.filterTrigger){const id=b.dataset.filterTrigger,wasOpen=b.getAttribute('aria-expanded')==='true';closeFilterMenus();if(!wasOpen){b.setAttribute('aria-expanded','true');$(id+'-menu').classList.remove('hidden');}return;}
+    if(b.dataset.filterOption){const id=b.dataset.filterOption;$(id).value=b.dataset.value;closeFilterMenus();$(id).dispatchEvent(new Event('change'));$(id+'-trigger').focus();return;}
+    if(b.dataset.toggleChildren){const id=Number(b.dataset.toggleChildren);expandedParents.has(id)?expandedParents.delete(id):expandedParents.add(id);render();document.querySelector(`[data-toggle-children="${id}"]`)?.focus({preventScroll:true});return;}
+    if(b.dataset.locateParent){locateParent(Number(b.dataset.locateParent));return;}
+    if(b.dataset.related){openTask(Number(b.dataset.related));return;}
+    if(b.dataset.view){view=b.dataset.view;render();}
+    if(b.dataset.page){const taskPage=b.dataset.page==='tasks';$('tasks-panel').classList.toggle('hidden',!taskPage);$('activity-panel').classList.toggle('hidden',taskPage);$('view-control').classList.toggle('hidden',!taskPage);document.querySelectorAll('[data-page]').forEach(t=>{const active=t===b;t.setAttribute('aria-selected',active);['bg-white','font-medium','text-black'].forEach(c=>t.classList.toggle(c,active));t.classList.toggle('text-black-64',!active);});if(!taskPage)renderActivity();}
+    if(b.dataset.edit)openTask(Number(b.dataset.edit));
+    if(b.dataset.close)$(b.dataset.close).close();
+    if(b.dataset.conversation){const t=tasks.find(t=>t.id===Number(b.dataset.conversation));$('conversation-title').textContent=t.title;$('conversation-body').innerHTML=`<div class="bg-gray-100 rounded-r5 p-md"><p class="text-xs text-black-46 mb-xs">${escapeHTML(t.owner)}</p><p>请协助${escapeHTML(t.title)}。</p></div><div class="border border-black-6 rounded-r5 p-md"><p class="text-xs text-primary-500 mb-xs">空间智能体</p><p class="text-black-82">${escapeHTML(conversationReplies[t.id]||'正在处理该任务。')}</p></div>`;$('conversation-dialog').showModal();}
+  });
+  document.addEventListener('keydown',e=>{
+    const container=e.target.closest('[data-filter-container]');if(!container)return;
+    const id=container.dataset.filterContainer,menu=$(id+'-menu'),trigger=$(id+'-trigger');
+    if(e.key==='Escape'){closeFilterMenus();trigger.focus();return;}
+    if(!['ArrowDown','ArrowUp','Home','End'].includes(e.key))return;
+    e.preventDefault();menu.classList.remove('hidden');trigger.setAttribute('aria-expanded','true');
+    const options=[...menu.querySelectorAll('[role=option]')],i=options.indexOf(document.activeElement);
+    const next=e.key==='Home'?0:e.key==='End'?options.length-1:(i+(e.key==='ArrowDown'?1:-1)+options.length)%options.length;
+    options[next].focus();
+  });
+  ['status-filter','owner-filter','sort'].forEach(id=>$(id).addEventListener('change',()=>{expandMatchedParents();render();}));$('search').addEventListener('input',()=>{expandMatchedParents();render();});
+  $('clear-filters').addEventListener('click',()=>{$('status-filter').value='all';$('owner-filter').value='all';$('search').value='';render();});
+  $('new-task').addEventListener('click',()=>openTask(null));
+  $('task-title').addEventListener('input',()=>$('task-title').setCustomValidity(''));
+  $('task-form').addEventListener('submit',e=>{
+    e.preventDefault();const title=$('task-title').value.trim();if(!title){$('task-title').setCustomValidity('请输入任务名称');$('task-title').reportValidity();return;}
+    const fields={title,owner:$('task-owner').value,date:$('task-date').value};
+    if(editingId){Object.assign(tasks.find(t=>t.id===editingId),fields);activities.push({text:`贾娟娟更新了「${title}」`,time:'刚刚'});}else{tasks.push({id:Math.max(...tasks.map(t=>t.id))+1,...fields,agent:'空间智能体',status:'running',conversation:false});activities.push({text:`贾娟娟创建了「${title}」`,time:'刚刚'});}
+    $('task-dialog').close();render();notify(editingId?'任务已更新，列表与泳道已同步':(filteredTasks().some(t=>t.id===tasks[tasks.length-1].id)?'任务已创建，已加入「进行中」泳道':'任务已创建；当前筛选条件下不可见'));
+  });
+  // 两个视图共享任务数据；卡片仅在当前泳道内排序，不改变任务状态。
+  render();
+  </script>
+</body>
+</html>
